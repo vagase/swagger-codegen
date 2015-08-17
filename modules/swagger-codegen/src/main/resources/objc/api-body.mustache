@@ -6,72 +6,7 @@
 {{/imports}}
 {{newline}}
 
-@interface {{classname}} ()
-    @property (readwrite, nonatomic, strong) NSMutableDictionary *defaultHeaders;
-@end
-
 @implementation {{classname}}
-
-static NSString * basePath = @"{{basePath}}";
-
-#pragma mark - Initialize methods
-
-- (id) init {
-    self = [super init];
-    if (self) {
-        self.apiClient = [SWGApiClient sharedClientFromPool:basePath];
-        self.defaultHeaders = [NSMutableDictionary dictionary];
-    }
-    return self;
-}
-
-- (id) initWithApiClient:(SWGApiClient *)apiClient {
-    self = [super init];
-    if (self) {
-        if (apiClient) {
-            self.apiClient = apiClient;
-        }
-        else {
-            self.apiClient = [SWGApiClient sharedClientFromPool:basePath];
-        }
-        self.defaultHeaders = [NSMutableDictionary dictionary];
-    }
-    return self;
-}
-
-#pragma mark -
-
-+({{classname}}*) apiWithHeader:(NSString*)headerValue key:(NSString*)key {
-    static {{classname}}* singletonAPI = nil;
-
-    if (singletonAPI == nil) {
-        singletonAPI = [[{{classname}} alloc] init];
-        [singletonAPI addHeader:headerValue forKey:key];
-    }
-    return singletonAPI;
-}
-
-+(void) setBasePath:(NSString*)path {
-    basePath = path;
-}
-
-+(NSString*) getBasePath {
-    return basePath;
-}
-
--(void) addHeader:(NSString*)value forKey:(NSString*)key {
-    [self.defaultHeaders setValue:value forKey:key];
-}
-
--(void) setHeaderValue:(NSString*) value
-           forKey:(NSString*)key {
-    [self.defaultHeaders setValue:value forKey:key];
-}
-
--(unsigned long) requestQueueSize {
-    return [SWGApiClient requestQueueSize];
-}
-
 
 {{#operation}}
 /*!
@@ -90,7 +25,7 @@ static NSString * basePath = @"{{basePath}}";
     NSAssert({{paramName}} != nil, @"Missing the required parameter `{{paramName}}` when calling {{nickname}}");
     {{/required}}{{/allParams}}
 
-    NSMutableString* requestUrl = [NSMutableString stringWithFormat:@"%@{{path}}", basePath];
+    NSMutableString* requestUrl = [NSMutableString stringWithFormat:@"%@{{path}}", self.basePath];
 
     // remove format in URL if needed
     if ([requestUrl rangeOfString:@".{format}"].location != NSNotFound)
