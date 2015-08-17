@@ -70,7 +70,7 @@ public class ObjcClientCodegen extends DefaultCodegen implements CodegenConfig {
                         "double", "protocol", "interface", "implementation",
                         "NSObject", "NSInteger", "NSNumber", "CGFloat",
                         "property", "nonatomic", "retain", "strong",
-                        "weak", "unsafe_unretained", "readwrite", "readonly"
+                        "weak", "unsafe_unretained", "readwrite", "readonly", "description"
                 ));
 
         typeMapping = new HashMap<String, String>();
