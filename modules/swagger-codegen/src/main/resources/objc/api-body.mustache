@@ -101,26 +101,27 @@
     {{/bodyParam}}
     {{^bodyParam}}
 
-    NSMutableDictionary * formParams = [[NSMutableDictionary alloc]init];
-
     {{#formParams}}
-    {{#notFile}}
-    formParams[@"{{paramName}}"] = {{paramName}};
-    {{/notFile}}{{#isFile}}
-    requestContentType = @"multipart/form-data";
     if(bodyDictionary == nil) {
-      bodyDictionary = [[NSMutableArray alloc] init];
+        bodyDictionary = [[NSMutableArray alloc] init];
     }
+
+    {{#notFile}}
+    NSMutableDictionary * formParams = [[NSMutableDictionary alloc]init];
+    formParams[@"{{paramName}}"] = {{paramName}};
+
+    [bodyDictionary addObject:formParams];
+    {{/notFile}}
+    {{#isFile}}
+    requestContentType = @"multipart/form-data";
+
     if({{paramName}} != nil) {
-      [bodyDictionary addObject:{{paramName}}];
-      {{paramName}}.paramName  = @"{{baseName}}";
+        {{paramName}}.paramName = @"{{baseName}}";
+        [bodyDictionary addObject:{{paramName}}];
     }
     {{/isFile}}
-    if(bodyDictionary == nil) {
-      bodyDictionary = [[NSMutableArray alloc] init];
-    }
-    [bodyDictionary addObject:formParams];
     {{/formParams}}
+
     {{/bodyParam}}
 
     {{#requiredParamCount}}
