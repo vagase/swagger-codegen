@@ -40,20 +40,6 @@ static bool loggingEnabled = true;
     cacheEnabled = enabled;
 }
 
-+(void)configureCacheWithMemoryAndDiskCapacity: (unsigned long) memorySize
-                                      diskSize: (unsigned long) diskSize {
-    NSAssert(memorySize > 0, @"invalid in-memory cache size");
-    NSAssert(diskSize >= 0, @"invalid disk cache size");
-
-    NSURLCache *cache =
-    [[NSURLCache alloc]
-     initWithMemoryCapacity:memorySize
-     diskCapacity:diskSize
-     diskPath:@"swagger_url_cache"];
-
-    [NSURLCache setSharedURLCache:cache];
-}
-
 +(NSOperationQueue*) sharedQueue {
     return sharedQueue;
 }
@@ -70,9 +56,6 @@ static bool loggingEnabled = true;
 
         // create pool
         _pool = [[NSMutableDictionary alloc] init];
-
-        // initialize URL cache
-        [SWGApiClient configureCacheWithMemoryAndDiskCapacity:4*1024*1024 diskSize:32*1024*1024];
 
         // configure reachability
         [SWGApiClient configureCacheReachibilityForHost:baseUrl];
