@@ -44,6 +44,13 @@
     {{/queryParams}}
     NSMutableDictionary* headerParams = [NSMutableDictionary dictionary];
 
+    if ([self.delegate respondsToSelector:@selector(api:defaultHeadersForRequest:)]) {
+        NSDictionary *defaultHeaders = [self.delegate api:self defaultHeadersForRequest:requestUrl];
+        if (defaultHeaders) {
+            [headerParams addEntriesFromDictionary:defaultHeaders];
+        }
+    }
+
     {{#headerParams}}if({{paramName}} != nil)
         headerParams[@"{{baseName}}"] = {{paramName}};
     {{/headerParams}}
