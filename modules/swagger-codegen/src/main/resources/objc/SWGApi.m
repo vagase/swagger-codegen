@@ -1,13 +1,5 @@
 #import "SWGApi.h"
 
-@interface SWGApi () {
-    NSMutableDictionary *_defaultHeaders;
-}
-
-@end
-
-#pragma mark -
-
 @implementation SWGApi
 
 @dynamic apiClient;
@@ -25,18 +17,8 @@
 
         // force to create api client
         [self apiClient];
-
-        _defaultHeaders = [NSMutableDictionary dictionary];
     }
     return self;
-}
-
-- (void) setHeader:(NSString*)value forKey:(NSString*)key {
-    [_defaultHeaders setValue:value forKey:key];
-}
-
-- (unsigned long) requestQueueSize {
-    return [SWGApiClient requestQueueSize];
 }
 
 @end

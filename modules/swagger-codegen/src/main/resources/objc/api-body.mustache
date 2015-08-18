@@ -42,7 +42,7 @@
         {{^collectionFormat}}queryParams[@"{{baseName}}"] = {{paramName}};{{/collectionFormat}}
     }
     {{/queryParams}}
-    NSMutableDictionary* headerParams = [NSMutableDictionary dictionaryWithDictionary:self.defaultHeaders];
+    NSMutableDictionary* headerParams = [NSMutableDictionary dictionary];
 
     {{#headerParams}}if({{paramName}} != nil)
         headerParams[@"{{baseName}}"] = {{paramName}};
