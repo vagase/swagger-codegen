@@ -98,7 +98,7 @@ static bool loggingEnabled = true;
 + (NSString *) selectHeaderAccept:(NSArray *)accepts
 {
     if (accepts == nil || [accepts count] == 0) {
-        return @"";
+        return @"application/json";
     }
     
     NSMutableArray *lowerAccepts = [[NSMutableArray alloc] initWithCapacity:[accepts count]];
