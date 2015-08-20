@@ -18,7 +18,7 @@
 -(NSNumber*) {{nickname}}WithCompletionBlock{{^allParams}}: {{/allParams}}{{#allParams}}{{#secondaryParam}} {{paramName}}{{/secondaryParam}}: ({{{dataType}}}) {{paramName}}
         {{/allParams}}
         {{#returnBaseType}}{{#hasParams}}completionHandler: {{/hasParams}}(void (^)({{{returnType}}} output, NSError* error))completionBlock{{/returnBaseType}}
-        {{^returnBaseType}}{{#hasParams}}completionHandler: {{/hasParams}}(void (^)(NSError* error))completionBlock{{/returnBaseType}} {
+        {{^returnBaseType}}{{#hasParams}}completionHandler: {{/hasParams}}(void (^)(NSData *data, NSError* error))completionBlock{{/returnBaseType}} {
 
     {{#allParams}}{{#required}}
     // verify the required parameter '{{paramName}}' is set

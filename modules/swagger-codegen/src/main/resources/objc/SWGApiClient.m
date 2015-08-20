@@ -253,15 +253,23 @@ static NSMutableDictionary *queuedRequestsDict = nil;
     *querys = [NSDictionary dictionaryWithDictionary:querysWithAuth];
 }
 
--(NSNumber*)  dictionary: (NSString*) path
-                  method: (NSString*) method
-             queryParams: (NSDictionary*) queryParams
-                    body: (id) body
-            headerParams: (NSDictionary*) headerParams
-            authSettings: (NSArray *) authSettings
-      requestContentType: (NSString*) requestContentType
-     responseContentType: (NSString*) responseContentType
-         completionBlock: (void (^)(NSDictionary*, NSError *))completionBlock {
+-(NSNumber*)  executeWithPath: (NSString*) path
+                       method: (NSString*) method
+                  queryParams: (NSDictionary*) queryParams
+                         body: (id) body
+                 headerParams: (NSDictionary*) headerParams
+                 authSettings: (NSArray *) authSettings
+           requestContentType: (NSString*) requestContentType
+          responseContentType: (NSString*) responseContentType
+              completionBlock: (void (^)(id, NSError *))completionBlock {
+    // setting response serializer
+    if ([responseContentType isEqualToString:@"application/json"]) {
+        self.responseSerializer = [AFJSONResponseSerializer serializer];
+    }
+    else {
+        self.responseSerializer = [AFHTTPResponseSerializer serializer];
+    }
+
     // auth setting
     [self updateHeaderParams:&headerParams queryParams:&queryParams WithAuthSettings:authSettings];
 
@@ -335,14 +343,14 @@ static NSMutableDictionary *queuedRequestsDict = nil;
 
     AFHTTPRequestOperation *operation = \
     [self HTTPRequestOperationWithRequest:request
-                                  success:^(AFHTTPRequestOperation *operation, id JSON) {
+                                  success:^(AFHTTPRequestOperation *operation, id data) {
                                       if([weakSelf _finishRequestWithId:requestId]) {
 
                                           [weakSelf _logResponseId:requestId
-                                                              data:JSON
+                                                              data:data
                                                              error:nil];
 
-                                          completionBlock(JSON, nil);
+                                          completionBlock(data, nil);
                                       }
                                   }
                                   failure:^(AFHTTPRequestOperation *operation, NSError *error) {

@@ -24,7 +24,7 @@
     {{#returnBaseType}}{{#hasParams}}
     completionHandler: {{/hasParams}}(void (^)({{{returnType}}} output, NSError* error))completionBlock;{{/returnBaseType}}
     {{^returnBaseType}}{{#hasParams}}
-    completionHandler: {{/hasParams}}(void (^)(NSError* error))completionBlock;{{/returnBaseType}}
+    completionHandler: {{/hasParams}}(void (^)(NSData *data, NSError* error))completionBlock;{{/returnBaseType}}
 
 {{newline}}
 {{/operation}}

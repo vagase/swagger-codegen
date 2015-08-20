@@ -84,15 +84,15 @@ extern NSString *const SWGResponseObjectErrorKey;
  *
  * @return The request id.
  */
--(NSNumber*)  dictionary:(NSString*) path
-                  method:(NSString*) method
-             queryParams:(NSDictionary*) queryParams
-                    body:(id) body
-            headerParams:(NSDictionary*) headerParams
-            authSettings: (NSArray *) authSettings
-      requestContentType:(NSString*) requestContentType
-     responseContentType:(NSString*) responseContentType
-         completionBlock:(void (^)(NSDictionary*, NSError *))completionBlock;
+-(NSNumber*)  executeWithPath: (NSString*) path
+                       method: (NSString*) method
+                  queryParams: (NSDictionary*) queryParams
+                         body: (id) body
+                 headerParams: (NSDictionary*) headerParams
+                 authSettings: (NSArray *) authSettings
+           requestContentType: (NSString*) requestContentType
+          responseContentType: (NSString*) responseContentType
+              completionBlock: (void (^)(id, NSError *))completionBlock;
 
 /**
  * Remove request id from the queue
