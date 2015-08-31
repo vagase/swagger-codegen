@@ -975,6 +975,7 @@ public class DefaultCodegen {
             p.collectionFormat = collectionFormat;
             p.dataType = model.datatype;
             p.paramName = toParamName(qp.getName());
+            p.paramNameCapitalized = StringUtils.capitalize(p.paramName);
 
             if (model.complexType != null) {
                 imports.add(model.complexType);
@@ -1031,6 +1032,7 @@ public class DefaultCodegen {
                 }
             }
             p.paramName = toParamName(bp.getName());
+            p.paramNameCapitalized = StringUtils.capitalize(p.paramName);
         }
         return p;
     }

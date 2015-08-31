@@ -3,7 +3,7 @@ package io.swagger.codegen;
 public class CodegenParameter {
     public Boolean isFormParam, isQueryParam, isPathParam, isHeaderParam,
             isCookieParam, isBodyParam, isFile, notFile, hasMore, isContainer, secondaryParam;
-    public String baseName, paramName, dataType, collectionFormat, description, baseType, defaultValue;
+    public String baseName, paramName, paramNameCapitalized, dataType, collectionFormat, description, baseType, defaultValue;
     public String jsonSchema;
 
     /**
@@ -22,6 +22,7 @@ public class CodegenParameter {
         output.secondaryParam = this.secondaryParam;
         output.baseName = this.baseName;
         output.paramName = this.paramName;
+        output.paramNameCapitalized = this.paramNameCapitalized;
         output.dataType = this.dataType;
         output.collectionFormat = this.collectionFormat;
         output.description = this.description;
