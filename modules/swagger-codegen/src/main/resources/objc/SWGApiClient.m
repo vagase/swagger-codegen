@@ -8,6 +8,7 @@ NSString *const SWGResponseObjectErrorKey = @"SWGResponseObject";
 
 static long requestId = 0;
 static NSMutableDictionary *queuedRequestsDict = nil;
+static BOOL gLogRequests = NO;
 
 #pragma mark -
 
@@ -19,20 +20,20 @@ static NSMutableDictionary *queuedRequestsDict = nil;
 
 - (void) _logRequestId:(NSNumber*)requestId
                request:(NSURLRequest *)request {
-    if (self.logRequests) {
-        NSLog(@"[SWGApiClient] request[#%@]: %@", requestId, [self _descriptionForRequest:request]);
+    if ([SWGApiClient logRequests]) {
+        DDLogDebug(@"[SWGApiClient] request[#%@]: %@", requestId, [self _descriptionForRequest:request]);
     }
 }
 
 - (void) _logResponseId:(NSNumber *)requestId
                    data:(id)data
                   error:(NSError *)error {
-    if (self.logRequests) {
+    if ([SWGApiClient logRequests]) {
         if (error) {
-            NSLog(@"[SWGApiClient] response[#%@] error: %@ ", requestId, error);
+            DDLogDebug(@"[SWGApiClient] response[#%@] error: %@ ", requestId, error);
         }
         else {
-            NSLog(@"[SWGApiClient] response[#%@] data: %@ ", requestId, data);
+            DDLogDebug(@"[SWGApiClient] response[#%@] data: %@ ", requestId, data);
         }
     }
 }
@@ -103,6 +104,14 @@ static NSMutableDictionary *queuedRequestsDict = nil;
     }
 
     return self;
+}
+
++ (BOOL) logRequests {
+    return gLogRequests;
+}
+
++ (void) setLogRequests:(BOOL)logRequests {
+    gLogRequests = logRequests;
 }
 
 /*

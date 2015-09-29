@@ -11,8 +11,6 @@ extern NSString *const SWGResponseObjectErrorKey;
 
 @interface SWGApiClient : AFHTTPRequestOperationManager
 
-@property(nonatomic, assign) BOOL logRequests;
-
 /**
  * Get the Api Client instance from pool
  *
@@ -21,6 +19,16 @@ extern NSString *const SWGResponseObjectErrorKey;
  * @return The SWGApiClient instance.
  */
 +(SWGApiClient *)sharedClientFromPool:(NSString *)baseUrl;
+
+
+/**
+ * Set whether to log request/response
+ *
+ * @param logRequests
+ *
+ */
++ (BOOL) logRequests;
++ (void) setLogRequests:(BOOL)logRequests;
 
 /**
  * Get the request queue size
