@@ -14,26 +14,47 @@ static BOOL gLogRequests = NO;
 
 @implementation SWGApiClient(private)
 
-- (NSString*) _descriptionForRequest:(NSURLRequest*)request {
-    return [[request URL] absoluteString];
-}
-
-- (void) _logRequestId:(NSNumber*)requestId
-               request:(NSURLRequest *)request {
-    if ([SWGApiClient logRequests]) {
-        DDLogDebug(@"[SWGApiClient] request[#%@]: %@", requestId, [self _descriptionForRequest:request]);
-    }
-}
-
 - (void) _logResponseId:(NSNumber *)requestId
+                request:(NSURLRequest *)request
+               duration:(NSTimeInterval)duration
                    data:(id)data
                   error:(NSError *)error {
+    NSString *requestURLStr = [request.URL absoluteString];
+
+    long long durationMS = duration * 1000L;
+
     if ([SWGApiClient logRequests]) {
         if (error) {
-            DDLogDebug(@"[SWGApiClient] response[#%@] error: %@ ", requestId, error);
+            DDLogError(@"[SWGApiClient] request[#%@][%lldms] %@ - response error: %@ ", requestId, durationMS, requestURLStr, error);
         }
         else {
-            DDLogDebug(@"[SWGApiClient] response[#%@] data: %@ ", requestId, data);
+            NSString *jsonString = nil;
+            if (data) {
+                NSError *jsonError = nil;
+                NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data
+                                                                   options:0
+                                                                     error:&error];
+
+                if (!jsonError) {
+                    jsonString = [[NSString alloc] initWithData:jsonData
+                                                       encoding:NSUTF8StringEncoding];
+                }
+            }
+
+            if (jsonString) {
+                DDLogDebug(@"[SWGApiClient] request[#%@][%lldms] %@ - response data:⏎\n%@ ",
+                        requestId,
+                        durationMS,
+                        requestURLStr,
+                        jsonString);
+            }
+            else {
+                DDLogDebug(@"[SWGApiClient] request[#%@][%lldms] %@ - response data: %@ ",
+                        requestId,
+                        durationMS,
+                        requestURLStr,
+                        data);
+            }
         }
     }
 }
@@ -347,6 +368,7 @@ static BOOL gLogRequests = NO;
     }
 
     NSNumber *requestId = [self _genNextRequestId];
+    NSDate *requestStartDate = [NSDate date];
 
     __weak id weakSelf = self;
 
@@ -354,8 +376,10 @@ static BOOL gLogRequests = NO;
     [self HTTPRequestOperationWithRequest:request
                                   success:^(AFHTTPRequestOperation *operation, id data) {
                                       if([weakSelf _finishRequestWithId:requestId]) {
-
+                                          NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:requestStartDate];
                                           [weakSelf _logResponseId:requestId
+                                                           request:request
+                                                          duration:duration
                                                               data:data
                                                              error:nil];
 
@@ -363,6 +387,7 @@ static BOOL gLogRequests = NO;
                                       }
                                   }
                                   failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
                                       if([weakSelf _finishRequestWithId:requestId]) {
                                           NSMutableDictionary *userInfo = [error.userInfo mutableCopy];
 
@@ -374,7 +399,10 @@ static BOOL gLogRequests = NO;
                                                                                      code:error.code
                                                                                  userInfo:userInfo];
 
+                                          NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:requestStartDate];
                                           [weakSelf _logResponseId:requestId
+                                                           request:request
+                                                          duration:duration
                                                               data:nil
                                                              error:augmentedError];
 
@@ -386,7 +414,6 @@ static BOOL gLogRequests = NO;
     [self.operationQueue addOperation:operation];
 
     [self _queueRequestOperation:operation withId:requestId];
-    [self _logRequestId:requestId request:request];
 
     return requestId;
 }
