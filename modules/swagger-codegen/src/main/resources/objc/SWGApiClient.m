@@ -33,7 +33,7 @@ static BOOL gLogRequests = NO;
                 NSError *jsonError = nil;
                 NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data
                                                                    options:0
-                                                                     error:&error];
+                                                                     error:&jsonError];
 
                 if (!jsonError) {
                     jsonString = [[NSString alloc] initWithData:jsonData
