@@ -24,37 +24,46 @@ static BOOL gLogRequests = NO;
     long long durationMS = duration * 1000L;
 
     if ([SWGApiClient logRequests]) {
-        if (error) {
-            DDLogError(@"[SWGApiClient] request[#%@][%lldms] %@ - response error: %@ ", requestId, durationMS, requestURLStr, error);
-        }
-        else {
-            NSString *jsonString = nil;
-            if (data) {
-                NSError *jsonError = nil;
-                NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data
-                                                                   options:0
-                                                                     error:&jsonError];
-
-                if (!jsonError) {
-                    jsonString = [[NSString alloc] initWithData:jsonData
-                                                       encoding:NSUTF8StringEncoding];
-                }
+        @try {
+            if (error) {
+                DDLogDebug(@"[SWGApiClient] request[#%@][%lldms] %@ - response error: %@ ", requestId, durationMS, requestURLStr, error);
             }
+            else {
+                NSString *dataString = nil;
 
-            if (jsonString) {
+                if (data) {
+                    NSData *dataObj = nil;
+
+                    if ([data isKindOfClass:NSData.class]) {
+                        dataObj = data;
+                    }
+                    else if ([NSJSONSerialization isValidJSONObject:data]){
+                        NSError *jsonError = nil;
+                        dataObj = [NSJSONSerialization dataWithJSONObject:data
+                                                                  options:0
+                                                                    error:&jsonError];
+                        if (jsonError) {
+                            DDLogDebug(@"[SWGApiClient] error while encode object to data:%@ - %@", error, data);
+                            dataObj = nil;
+                        }
+                    }
+
+                    if (dataObj) {
+                        dataString = [[NSString alloc] initWithData:dataObj
+                                                           encoding:NSUTF8StringEncoding];
+                    }
+                }
+
                 DDLogDebug(@"[SWGApiClient] request[#%@][%lldms] %@ - response data:⏎\n%@ ",
                         requestId,
                         durationMS,
                         requestURLStr,
-                        jsonString);
+                        dataString ? dataString : data);
             }
-            else {
-                DDLogDebug(@"[SWGApiClient] request[#%@][%lldms] %@ - response data: %@ ",
-                        requestId,
-                        durationMS,
-                        requestURLStr,
-                        data);
-            }
+        }
+        @catch (NSException *exception) {
+            // forbid any unexpected exception to crash the app
+            DDLogDebug(@"[SWGApiClient] exception occured while logging requset[%@] resposne[%@] exception[%@]", requestURLStr, data, exception);
         }
     }
 }
