@@ -7,5 +7,5 @@ return [self.apiClient executeWithPath: requestUrl
                     requestContentType: requestContentType
                    responseContentType: responseContentType
                        completionBlock: ^(NSData *data, NSError *error) {
-                            completionBlock(data, error);
+                            completionBlock(data, data, error);
                         }];

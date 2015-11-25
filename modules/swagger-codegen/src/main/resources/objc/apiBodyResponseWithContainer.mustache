@@ -9,15 +9,11 @@
                        responseContentType: responseContentType
                            completionBlock: ^(NSDictionary *data, NSError *error) {
                              if (error) {
-                                 {{#returnBaseType}}completionBlock(nil, error);{{/returnBaseType}}{{^returnBaseType}}completionBlock(error);{{/returnBaseType}}
+                                 {{#returnBaseType}}completionBlock(nil, data, error);{{/returnBaseType}}{{^returnBaseType}}completionBlock(nil, data, error);{{/returnBaseType}}
                                  return;
                              }
                              {{#isMapContainer}}
-                             NSDictionary *result = nil;
-                             if (data) {
-                                 result = [[NSDictionary alloc]initWithDictionary: data];
-                             }
-                             completionBlock(data, nil);
+                             completionBlock(data, data, nil);
                              {{/isMapContainer}}{{#isListContainer}}
                              {{#returnBaseType}}if([data isKindOfClass:[NSArray class]]){
                                  NSMutableArray * objs = [[NSMutableArray alloc] initWithCapacity:[data count]];
@@ -30,7 +26,7 @@
                                      {{/returnTypeIsPrimitive}}
                                      [objs addObject:d];
                                  }
-                                 completionBlock(({{{returnType}}})objs, nil);
+                                 completionBlock(({{{returnType}}})objs, data, nil);
                              }
                              {{/returnBaseType}}
                              {{/isListContainer}}
