@@ -376,6 +376,11 @@ static BOOL gLogRequests = NO;
         [request setValue:[headerParams valueForKey:key] forHTTPHeaderField:key];
     }
 
+    if([[request valueForHTTPHeaderField:@"Content-Encoding"] isEqualToString:@"gzip"]) {
+        NSData *compBodyData = [GzipUtility gzipData:[request HTTPBody]];
+        [request setHTTPBody:compBodyData];
+    }
+
     NSNumber *requestId = [self _genNextRequestId];
     NSDate *requestStartDate = [NSDate date];
 
