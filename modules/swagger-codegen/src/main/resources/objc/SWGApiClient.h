@@ -8,6 +8,9 @@
  */
 extern NSString *const SWGResponseObjectErrorKey;
 
+@class SWGApiClient;
+
+typedef BOOL(^LogRequestsFilterBlock)(SWGApiClient *client, NSURLRequest *request, id responseData, NSError *error);
 
 @interface SWGApiClient : AFHTTPRequestOperationManager
 
@@ -29,6 +32,7 @@ extern NSString *const SWGResponseObjectErrorKey;
  */
 + (BOOL) logRequests;
 + (void) setLogRequests:(BOOL)logRequests;
++ (void) setLogRequestsFilterBlock:(LogRequestsFilterBlock)filterBlock;
 
 /**
  * Get the request queue size
