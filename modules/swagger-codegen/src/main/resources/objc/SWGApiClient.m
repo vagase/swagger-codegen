@@ -15,16 +15,18 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
 
 @implementation SWGApiClient(private)
 
-- (void) _logResponseId:(NSNumber *)requestId
-                request:(NSURLRequest *)request
-               duration:(NSTimeInterval)duration
-                   data:(id)data
-                  error:(NSError *)error {
+- (void) _logResponseWithId:(NSNumber *)requestId
+                  operation:(AFHTTPRequestOperation *)operation
+                   duration:(NSTimeInterval)duration
+                decodedData:(id)decodedData
+                      error:(NSError *)error {
     if (![SWGApiClient logRequests]) {
         return;
     }
 
-    if (gLogRequestsFilterBlock && !gLogRequestsFilterBlock(self, request, data, error)) {
+    NSURLRequest *request = operation.request;
+
+    if (gLogRequestsFilterBlock && !gLogRequestsFilterBlock(self, request, decodedData, error)) {
         return;
     }
 
@@ -37,20 +39,21 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
         }
         else {
             NSString *dataString = nil;
+            NSUInteger dataLength = operation.responseData.length;
 
-            if (data) {
+            if (decodedData) {
                 NSData *dataObj = nil;
 
-                if ([data isKindOfClass:NSData.class]) {
-                    dataObj = data;
+                if ([decodedData isKindOfClass:NSData.class]) {
+                    dataObj = decodedData;
                 }
-                else if ([NSJSONSerialization isValidJSONObject:data]){
+                else if ([NSJSONSerialization isValidJSONObject:decodedData]){
                     NSError *jsonError = nil;
-                    dataObj = [NSJSONSerialization dataWithJSONObject:data
+                    dataObj = [NSJSONSerialization dataWithJSONObject:decodedData
                                                               options:0
                                                                 error:&jsonError];
                     if (jsonError) {
-                        DDLogDebug(@"[SWGApiClient] error while encode object to data:%@ - %@", error, data);
+                        DDLogDebug(@"[SWGApiClient] error while encode object to data:%@ - %@", error, decodedData);
                         dataObj = nil;
                     }
                 }
@@ -61,16 +64,17 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
                 }
             }
 
-            DDLogDebug(@"[SWGApiClient] request[#%@][%lldms] %@ - response data:⏎\n%@ ",
+            DDLogDebug(@"[SWGApiClient] request[#%@][%lldms][%lldbyte] %@ - response data:⏎\n%@ ",
                     requestId,
                     durationMS,
+                    (long long)dataLength,
                     requestURLStr,
-                    dataString ? dataString : data);
+                    dataString ? dataString : decodedData);
         }
     }
     @catch (NSException *exception) {
         // forbid any unexpected exception to crash the app
-        DDLogDebug(@"[SWGApiClient] exception occured while logging requset[%@] resposne[%@] exception[%@]", requestURLStr, data, exception);
+        DDLogDebug(@"[SWGApiClient] exception occured while logging requset[%@] resposne[%@] exception[%@]", requestURLStr, decodedData, exception);
     }
 }
 
@@ -401,11 +405,11 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
                                   success:^(AFHTTPRequestOperation *operation, id data) {
                                       if([weakSelf _finishRequestWithId:requestId]) {
                                           NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:requestStartDate];
-                                          [weakSelf _logResponseId:requestId
-                                                           request:request
-                                                          duration:duration
-                                                              data:data
-                                                             error:nil];
+                                          [weakSelf _logResponseWithId:requestId
+                                                             operation:operation
+                                                              duration:duration
+                                                           decodedData:data
+                                                                 error:nil];
 
                                           completionBlock(data, nil);
                                       }
@@ -424,11 +428,11 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
                                                                                  userInfo:userInfo];
 
                                           NSTimeInterval duration = [[NSDate date] timeIntervalSinceDate:requestStartDate];
-                                          [weakSelf _logResponseId:requestId
-                                                           request:request
-                                                          duration:duration
-                                                              data:nil
-                                                             error:augmentedError];
+                                          [weakSelf _logResponseWithId:requestId
+                                                             operation:operation
+                                                              duration:duration
+                                                           decodedData:nil
+                                                                 error:augmentedError];
 
                                           completionBlock(nil, augmentedError);
                                       }
