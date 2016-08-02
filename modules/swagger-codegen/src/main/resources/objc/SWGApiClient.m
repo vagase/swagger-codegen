@@ -311,6 +311,7 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
                   queryParams: (NSDictionary*) queryParams
                          body: (id) body
                  headerParams: (NSDictionary*) headerParams
+                 keyPaths: (NSDictionary*) keyPaths
                  authSettings: (NSArray *) authSettings
            requestContentType: (NSString*) requestContentType
           responseContentType: (NSString*) responseContentType
@@ -399,6 +400,12 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
     NSDate *requestStartDate = [NSDate date];
 
     __weak id weakSelf = self;
+
+    if(keyPaths) {
+        [keyPaths enumerateKeysAndObjectsUsingBlock:^(NSString *keyPath, id obj, BOOL *stop) {
+            [request setValue:obj forKey:keyPath];
+        }];
+    }
 
     AFHTTPRequestOperation *operation = \
     [self HTTPRequestOperationWithRequest:request

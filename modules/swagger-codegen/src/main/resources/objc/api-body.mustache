@@ -55,6 +55,14 @@
         }
     }
 
+    NSMutableDictionary* keyPaths = [NSMutableDictionary dictionary];
+    if ([self.delegate respondsToSelector:@selector(api:defaultKeyPathsForRequest:)]) {
+        NSDictionary *defaultKeyPaths = [self.delegate api:self defaultKeyPathsForRequest:requestUrl];
+        if (defaultKeyPaths) {
+            [keyPaths addEntriesFromDictionary:defaultKeyPaths];
+        }
+    }
+
     {{#headerParams}}if({{paramName}} != nil)
         headerParams[@"{{baseName}}"] = {{paramName}};
     {{/headerParams}}

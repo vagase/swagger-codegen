@@ -89,10 +89,11 @@ typedef BOOL(^LogRequestsFilterBlock)(SWGApiClient *client, NSURLRequest *reques
  * @param queryParams Request query parameters.
  * @param body Request body.
  * @param headerParams Request header parameters.
+ * @param keyPaths Request key path setting,for example:timeoutInterval
  * @param authSettings Request authentication names.
  * @param requestContentType Request content-type.
  * @param responseContentType Response content-type.
- * @param completionBlock The block will be executed when the request completed. 
+ * @param completionBlock The block will be executed when the request completed.
  *
  * @return The request id.
  */
@@ -101,6 +102,7 @@ typedef BOOL(^LogRequestsFilterBlock)(SWGApiClient *client, NSURLRequest *reques
                   queryParams: (NSDictionary*) queryParams
                          body: (id) body
                  headerParams: (NSDictionary*) headerParams
+                     keyPaths: (NSDictionary*) keyPaths
                  authSettings: (NSArray *) authSettings
            requestContentType: (NSString*) requestContentType
           responseContentType: (NSString*) responseContentType

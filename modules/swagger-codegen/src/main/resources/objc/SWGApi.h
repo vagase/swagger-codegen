@@ -22,5 +22,6 @@
 @optional
 
 - (NSDictionary *) api:(SWGApi *)api defaultHeadersForRequest:(NSString *)request;
+- (NSDictionary *) api:(SWGApi *)api defaultKeyPathsForRequest:(NSString *)request;
 
 @end
