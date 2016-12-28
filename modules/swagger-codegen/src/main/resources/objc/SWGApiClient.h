@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "AFHTTPRequestOperationManager.h"
+#import <AFNetworking/AFNetworking.h>
 
 /**
  * A key for `NSError` user info dictionaries.
@@ -12,7 +12,7 @@ extern NSString *const SWGResponseObjectErrorKey;
 
 typedef BOOL(^LogRequestsFilterBlock)(SWGApiClient *client, NSURLRequest *request, id responseData, NSError *error);
 
-@interface SWGApiClient : AFHTTPRequestOperationManager
+@interface SWGApiClient : AFHTTPSessionManager
 
 /**
  * Get the Api Client instance from pool
