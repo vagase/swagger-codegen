@@ -8,9 +8,9 @@
                               authSettings: authSettings
                         requestContentType: requestContentType
                        responseContentType: responseContentType
-                           completionBlock: ^(NSDictionary *data, NSError *error) {
+                           completionBlock: ^(NSDictionary *data, NSError *error, NSURLRequest *request, NSURLResponse *response) {
                              if (error) {
-                                 {{#returnBaseType}}completionBlock(nil, data, error);{{/returnBaseType}}{{^returnBaseType}}completionBlock(nil, data, error);{{/returnBaseType}}
+                                 {{#returnBaseType}}completionBlock(nil, data, error, request, response);{{/returnBaseType}}{{^returnBaseType}}completionBlock(nil, data, error, request, response);{{/returnBaseType}}
                                  return;
                              }
                              {{#isMapContainer}}
@@ -27,7 +27,7 @@
                                      {{/returnTypeIsPrimitive}}
                                      [objs addObject:d];
                                  }
-                                 completionBlock(({{{returnType}}})objs, data, nil);
+                                 completionBlock(({{{returnType}}})objs, data, nil, request, response);
                              }
                              {{/returnBaseType}}
                              {{/isListContainer}}

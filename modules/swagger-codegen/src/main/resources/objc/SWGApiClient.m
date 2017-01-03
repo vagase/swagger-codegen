@@ -4,8 +4,6 @@
 #import "SWGConfiguration.h"
 
 
-NSString *const SWGResponseObjectErrorKey = @"SWGResponseObject";
-
 static long requestId = 0;
 static NSMutableDictionary *queuedRequestsDict = nil;
 static BOOL gLogRequests = NO;
@@ -316,7 +314,7 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
                  authSettings: (NSArray *) authSettings
            requestContentType: (NSString*) requestContentType
           responseContentType: (NSString*) responseContentType
-              completionBlock: (void (^)(id, NSError *))completionBlock {
+              completionBlock: (void (^)(id, NSError *, NSURLRequest *, NSURLResponse *))completionBlock {
     // setting response serializer
     if ([responseContentType isEqualToString:@"application/json"]) {
         self.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -419,19 +417,14 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
                 NSError *resultError = nil;
 
                 if (!error) {
-                    completionBlock(responseObject, nil);
+                    completionBlock(responseObject, nil, request, response);
                 }
                 else {
                     NSMutableDictionary *userInfo = [error.userInfo mutableCopy];
 
-                    if(responseObject) {
-                        // Add in the (parsed) response body.
-                        userInfo[SWGResponseObjectErrorKey] = responseObject;
-                    }
-
                     resultError = [error initWithDomain:error.domain code:error.code userInfo:userInfo];
 
-                    completionBlock(nil, resultError);
+                    completionBlock(responseObject, resultError, request, response);
                 }
 
                 [weakSelf _logResponseWithId:requestId

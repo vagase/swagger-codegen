@@ -1,13 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <AFNetworking/AFNetworking.h>
 
-/**
- * A key for `NSError` user info dictionaries.
- *
- * The corresponding value is the parsed response body for an HTTP error.
- */
-extern NSString *const SWGResponseObjectErrorKey;
-
 @class SWGApiClient;
 
 typedef BOOL(^LogRequestsFilterBlock)(SWGApiClient *client, NSURLRequest *request, id responseData, NSError *error);
@@ -106,7 +99,7 @@ typedef BOOL(^LogRequestsFilterBlock)(SWGApiClient *client, NSURLRequest *reques
                  authSettings: (NSArray *) authSettings
            requestContentType: (NSString*) requestContentType
           responseContentType: (NSString*) responseContentType
-              completionBlock: (void (^)(id, NSError *))completionBlock;
+              completionBlock: (void (^)(id, NSError *, NSURLRequest *request, NSURLResponse *response))completionBlock;
 
 /**
  * Remove request id from the queue

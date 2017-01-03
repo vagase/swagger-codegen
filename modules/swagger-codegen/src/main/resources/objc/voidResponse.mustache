@@ -7,6 +7,6 @@ return [self.apiClient executeWithPath: requestUrl
                           authSettings: authSettings
                     requestContentType: requestContentType
                    responseContentType: responseContentType
-                       completionBlock: ^(NSData *data, NSError *error) {
-                            completionBlock(data, data, error);
+                       completionBlock: ^(NSData *data, NSError *error, NSURLRequest *request, NSURLResponse *response) {
+                            completionBlock(data, data, error, request, response);
                         }];

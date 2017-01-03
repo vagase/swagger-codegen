@@ -17,11 +17,11 @@
  */
 {{#hasParams}}
 -(NSNumber*) {{nickname}}With{{#allParams}}{{^secondaryParam}}{{paramNameCapitalized}}{{/secondaryParam}}{{#secondaryParam}} {{paramName}}{{/secondaryParam}}: ({{{dataType}}}) {{paramName}}{{/allParams}}
-    {{#returnBaseType}}completionHandler: (void (^)({{{returnType}}} output, id responseObject, NSError* error))completionBlock { {{/returnBaseType}}
-    {{^returnBaseType}}completionHandler: (void (^)(NSData *data, id responseObject, NSError* error))completionBlock { {{/returnBaseType}}
+    {{#returnBaseType}}completionHandler: (void (^)({{{returnType}}} output, id responseObject, NSError* error, NSURLRequest *request, NSURLResponse *response))completionBlock { {{/returnBaseType}}
+    {{^returnBaseType}}completionHandler: (void (^)(NSData *data, id responseObject, NSError* error, NSURLRequest *request, NSURLResponse *response))completionBlock { {{/returnBaseType}}
 {{/hasParams}}
 {{^hasParams}}
--(NSNumber*) {{nickname}}WithCompletionHandler:(void (^)({{#returnBaseType}}{{{returnType}}}{{/returnBaseType}}{{^returnBaseType}}NSData *{{/returnBaseType}} output, id responseObject, NSError* error))completionBlock {
+-(NSNumber*) {{nickname}}WithCompletionHandler:(void (^)({{#returnBaseType}}{{{returnType}}}{{/returnBaseType}}{{^returnBaseType}}NSData *{{/returnBaseType}} output, id responseObject, NSError* error, NSURLRequest *request, NSURLResponse *response))completionBlock {
 {{/hasParams}}
 
     {{#allParams}}{{#required}}
