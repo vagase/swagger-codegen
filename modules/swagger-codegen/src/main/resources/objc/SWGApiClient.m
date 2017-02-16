@@ -202,10 +202,6 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
     }
 }
 
-+(unsigned long)requestQueueSize {
-    return [queuedRequestsDict count];
-}
-
 +(NSString*) escape:(id)unescaped {
     if([unescaped isKindOfClass:[NSString class]]){
         return (NSString *)CFBridgingRelease
@@ -444,6 +440,16 @@ static LogRequestsFilterBlock gLogRequestsFilterBlock = nil;
 - (void) cancelRequest:(NSNumber*)requestId {
     NSURLSessionTask *task = [self _finishTaskWithId:requestId];
     [task cancel];
+}
+
+- (NSURLSessionTask *)sessionTaskForRequestId:(NSNumber *)requestId {
+    NSURLSessionTask *task = nil;
+
+    @synchronized(queuedRequestsDict) {
+        task = queuedRequestsDict[requestId];
+    }
+
+    return task;
 }
 
 @end

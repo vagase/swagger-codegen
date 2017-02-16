@@ -28,13 +28,6 @@ typedef BOOL(^LogRequestsFilterBlock)(SWGApiClient *client, NSURLRequest *reques
 + (void) setLogRequestsFilterBlock:(LogRequestsFilterBlock)filterBlock;
 
 /**
- * Get the request queue size
- *
- * @return The size of `queuedRequests` static variable.
- */
-+(unsigned long)requestQueueSize;
-
-/**
  * URL encode NSString
  *
  * @param unescaped The string which will be escaped.
@@ -107,5 +100,10 @@ typedef BOOL(^LogRequestsFilterBlock)(SWGApiClient *client, NSURLRequest *reques
  * @param requestId The request which will be removed.
  */
 - (void) cancelRequest:(NSNumber*)requestId;
+
+/**
+ * Get inner NSURLSessionTask object
+ */
+- (NSURLSessionTask *)sessionTaskForRequestId:(NSNumber *)requestId;
 
 @end
