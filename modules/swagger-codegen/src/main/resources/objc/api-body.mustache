@@ -42,8 +42,14 @@
     {{#queryParams}}if({{paramName}} != nil) {
         {{#collectionFormat}}
         queryParams[@"{{baseName}}"] = [[SWGQueryParamCollection alloc] initWithValuesAndFormat: {{baseName}} format: @"{{collectionFormat}}"];
+        {{/collectionFormat}}{{^collectionFormat}}
+        if ([{{paramName}} isKindOfClass:NSDictionary.class]) {
+            [queryParams addEntriesFromDictionary:(NSDictionary *){{paramName}}];
+        }
+        else {
+            queryParams[@"{{baseName}}"] = {{paramName}};
+        }
         {{/collectionFormat}}
-        {{^collectionFormat}}queryParams[@"{{baseName}}"] = {{paramName}};{{/collectionFormat}}
     }
     {{/queryParams}}
     NSMutableDictionary* headerParams = [NSMutableDictionary dictionary];
